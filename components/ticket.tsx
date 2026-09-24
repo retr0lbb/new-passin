@@ -1,5 +1,4 @@
 import { Calendar, Camera } from "lucide-react-native";
-import { MotiView } from "moti";
 import { Image, ImageBackground, Pressable, Text, useWindowDimensions, View } from "react-native";
 import QRCodeSvg from "./qrCode";
 
@@ -33,31 +32,32 @@ export function Credential({ onChangeAvatar, onShowQRCode, data }: Props){
     }
     
     return(
-        <MotiView 
-            from={{ 
-                opacity: 0,
-                translateY: -height,
-                rotateZ: "50deg",
-                rotateY: "30deg",
-                rotateX: "30deg"
-            }}
-            animate={{ 
-                opacity: 1,
-                translateY: 0,
-                rotateZ: "0deg",
-                rotateX: "0deg",
-                rotateY: "0deg"
-            }}
-            transition={{
-                type: "spring",
-                damping: 20,
-                rotateZ: {
-                    damping: 15,
-                    mass: 3
-                }
-            }}
-            className="w-full self-stretch items-center"
-        >
+        // <MotiView 
+        //     from={{ 
+        //         opacity: 0,
+        //         translateY: -height,
+        //         rotateZ: "50deg",
+        //         rotateY: "30deg",
+        //         rotateX: "30deg"
+        //     }}
+        //     animate={{ 
+        //         opacity: 1,
+        //         translateY: 0,
+        //         rotateZ: "0deg",
+        //         rotateX: "0deg",
+        //         rotateY: "0deg"
+        //     }}
+        //     transition={{
+        //         type: "spring",
+        //         damping: 20,
+        //         rotateZ: {
+        //             damping: 15,
+        //             mass: 3
+        //         }
+        //     }}
+        //     className="w-full self-stretch items-center"
+        // >
+            <View className="w-full self-stretch items-center">
             <Image 
                 source={require("@/assets/ticket/band.png")}
                 className="w-24 h-52 z-10"
@@ -129,6 +129,6 @@ export function Credential({ onChangeAvatar, onShowQRCode, data }: Props){
                     <Text className="font-body text-orange-500 text-sm">Ampliar QRCode</Text>
                 </Pressable>
             </View>
-        </MotiView>
+        </View>
     )
 }

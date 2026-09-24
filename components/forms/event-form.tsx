@@ -82,7 +82,7 @@ export function EventForm({ onSubmit }: EventFormProps) {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ gap: 20, padding: 16 }}>
+    <ScrollView contentContainerStyle={{ gap: 20, padding: 16, paddingBottom: 214 }}>
       <FormField label="Nome do Evento / Talk" required>
         <TextInput
           value={title}

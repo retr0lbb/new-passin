@@ -25,13 +25,13 @@ export default function SubscribeScreen() {
     try {
       // TODO: ajustar pra assinatura real do seu useAttendee.
       // Assumindo que ele retorna o Attendee criado com o `id` do Firebase.
-      const attendee = await createAttendee(id, {
+      const attendee = await createAttendee(id,{
         name,
         email
       });
 
       router.replace({
-        pathname: "/event/ticket/[id]",
+        pathname: "/ticket/[id]",
         params: {
           id: attendee,
           name,
@@ -40,7 +40,7 @@ export default function SubscribeScreen() {
           eventDate,
           // Mocks — sem QR code real e sem upload de imagem por enquanto
           image: `https://i.pravatar.cc/300?u=${encodeURIComponent(email)}`,
-          checkingUrl: `mock://checkin/${attendee}`,
+          checkInURL: `mock://checkin/${attendee}`,
         },
       });
     } catch (error) {

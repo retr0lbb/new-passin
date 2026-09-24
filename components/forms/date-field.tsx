@@ -3,7 +3,13 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { Calendar } from "lucide-react-native";
 import { useState } from "react";
-import { Modal, Platform, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface DateTimeFieldProps {
   mode: "date" | "time";
@@ -18,10 +24,69 @@ export function DateTimeField({
   value,
   onChange,
 }: DateTimeFieldProps) {
-  // No Android o picker é imperativo (abre um dialog do sistema e some).
-  // No iOS a gente controla a visibilidade e mostra num modal próprio.
   const [showIosPicker, setShowIosPicker] = useState(false);
 
+  // WEB
+  if (Platform.OS === "web") {
+    return (
+      <View className="flex-row items-center gap-3 rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3">
+        <Calendar size={18} color="#a1a1aa" />
+
+        <input
+          type={mode === "date" ? "date" : "time"}
+          value={
+            value
+              ? mode === "date"
+                ? value.toISOString().split("T")[0]
+                : value.toTimeString().slice(0, 5)
+              : ""
+          }
+          onChange={(e) => {
+            if (!e.target.value) return;
+
+            if (mode === "date") {
+              const [year, month, day] = e.target.value
+                .split("-")
+                .map(Number);
+
+              const date = new Date(year, month - 1, day);
+
+              // preserva horário existente
+              if (value) {
+                date.setHours(
+                  value.getHours(),
+                  value.getMinutes(),
+                  value.getSeconds()
+                );
+              }
+
+              onChange(date);
+            } else {
+              const [hours, minutes] = e.target.value
+                .split(":")
+                .map(Number);
+
+              const date = value ? new Date(value) : new Date();
+
+              date.setHours(hours, minutes, 0, 0);
+
+              onChange(date);
+            }
+          }}
+          style={{
+            flex: 1,
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            color: "#e4e4e7",
+            fontSize: 16,
+          }}
+        />
+      </View>
+    );
+  }
+
+  // MOBILE
   function handlePress() {
     if (Platform.OS === "android") {
       DateTimePickerAndroid.open({
@@ -32,6 +97,7 @@ export function DateTimeField({
           if (selectedDate) onChange(selectedDate);
         },
       });
+
       return;
     }
 
@@ -55,6 +121,7 @@ export function DateTimeField({
         className="flex-row items-center gap-3 rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3"
       >
         <Calendar size={18} color="#a1a1aa" />
+
         <Text
           className={`text-base ${
             formatted ? "text-zinc-200" : "text-zinc-500"
@@ -77,6 +144,7 @@ export function DateTimeField({
                   if (selectedDate) onChange(selectedDate);
                 }}
               />
+
               <TouchableOpacity
                 onPress={() => setShowIosPicker(false)}
                 activeOpacity={0.85}

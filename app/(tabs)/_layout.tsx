@@ -60,6 +60,19 @@ export default function TabLayout() {
           title: "Create event"
         }}
       />
+
+      <Tabs.Screen
+        name="event/[id]/subscribe/index"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="/ticket/[id]"
+        options={{ href: null }}
+      />
+    <Tabs.Screen
+      name="ticket/[id]"
+      options={{ href: null }}
+    />
     </Tabs>
   );
 }

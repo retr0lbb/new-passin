@@ -1,14 +1,15 @@
 import { EventForm } from "@/components/forms/event-form";
 import { HeaderComponent } from "@/components/header";
 import { useEvents } from "@/hooks/useEvents";
-import { View } from "react-native";
+import { router } from "expo-router";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 
 export default function CreateEventsPage(){
 
     const {createEvents} = useEvents()
 
     return(
-        <View className='flex flex-1' style={{backgroundColor: "#121719"}}>
+        <KeyboardAvoidingView  keyboardVerticalOffset={20} behavior={Platform.OS === "ios" ? "padding" : "height"} className='flex flex-1' style={{backgroundColor: "#121719"}}>
             <HeaderComponent />
 
             <View className="flex flex-1 px-2">
@@ -27,8 +28,9 @@ export default function CreateEventsPage(){
                         maximumAttendees: payload.maximumAttendees,
                         title: payload.title
                     })
+                    router.replace("/")
                 }} />
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }

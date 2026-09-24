@@ -14,6 +14,25 @@ export interface Event {
   categoryId: string;
 }
 
+// O `eventDate` pode não chegar como um `Date` de verdade dependendo da
+// origem (ex: Firestore Timestamp tem `.toDate()`, não `.toISOString()`;
+// APIs que serializam pra JSON mandam string). Essa função normaliza
+// qualquer um desses formatos pra um `Date` de verdade.
+function toJSDate(value: unknown): Date {
+  if (value instanceof Date) return value;
+
+  if (
+    value &&
+    typeof value === "object" &&
+    "toDate" in value &&
+    typeof (value as { toDate: unknown }).toDate === "function"
+  ) {
+    return (value as { toDate: () => Date }).toDate();
+  }
+
+  return new Date(value as string | number);
+}
+
 interface EventImageProps {
   source: ImageSourcePropType;
   children?: React.ReactNode;
@@ -30,13 +49,13 @@ export function EventImage({ source, children }: EventImageProps) {
 interface EventDateBadgeProps {
   date: Date;
 }
- 
+
 export function EventDateBadge({ date }: EventDateBadgeProps) {
   const formatted = new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
     month: "short",
   }).format(date);
- 
+
   return (
     <View className="absolute bottom-3 left-3 flex-row items-center gap-2 rounded-full bg-zinc-900/90 px-3 py-1.5">
       <Calendar size={14} color="#fb923c" />
@@ -52,7 +71,7 @@ interface EventCardButtonProps {
   onPress?: () => void;
   disabled?: boolean;
 }
- 
+
 export function EventCardButton({
   label = "Garantir vaga",
   onPress,
@@ -73,8 +92,6 @@ export function EventCardButton({
     </TouchableOpacity>
   );
 }
- 
-
 
 interface EventCardProps {
   event: Event;
@@ -83,47 +100,45 @@ interface EventCardProps {
   // (ex: futuramente abrir uma tela de "ver detalhes" em vez de inscrever).
   onPressAction?: () => void;
 }
- 
+
 export function EventCard({ event, onPressAction }: EventCardProps) {
   const router = useRouter();
- 
+  const eventDate = toJSDate(event.eventDate);
+
   function handlePress() {
     if (onPressAction) {
       onPressAction();
       return;
     }
- 
-    // TODO: ajustar o pathname pra bater com a rota real do seu
-    // app/(...)/subscribe.tsx no expo-router.
+
     router.push({
       pathname: "/event/[id]/subscribe",
       params: {
         id: event.id,
         eventTitle: event.title,
-        eventDate: event.eventDate.toISOString(),
+        eventDate: eventDate.toISOString(),
       },
     });
   }
- 
+
   return (
     <View className="gap-4 rounded-3xl border border-zinc-800 bg-zinc-950 p-3">
       <EventImage source={{ uri: event.imageKey }}>
-        <EventDateBadge date={event.eventDate} />
+        <EventDateBadge date={eventDate} />
       </EventImage>
- 
+
       <View className="gap-2 px-1">
         <Text className="text-xl font-bold text-white">{event.title}</Text>
         <Text className="text-sm leading-5 text-zinc-400">
           {event.detail}
         </Text>
       </View>
- 
+
       <View className="mx-1 h-px bg-zinc-800" />
- 
+
       <View className="px-1 pb-1">
         <EventCardButton onPress={handlePress} />
       </View>
     </View>
   );
 }
- 
