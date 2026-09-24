@@ -34,8 +34,8 @@ export default function TabOneScreen() {
     return
   }
 
-  return (
-    <View className='flex flex-1'>
+  return ( 
+    <View className='flex flex-1 ' style={{backgroundColor: "#121719"}}>
       <HeaderComponent />
       <View style={{
         flex: 1,

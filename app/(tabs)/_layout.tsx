@@ -2,8 +2,7 @@ import { CustomTabButton } from '@/components/tabButton';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Tabs } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { Ticket } from "lucide-react-native";
+import { CalendarPlus, Ticket } from "lucide-react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,6 +14,9 @@ export default function TabLayout() {
         tabBarStyle: {
           paddingHorizontal: 20,
           paddingVertical: 8,
+          minHeight: 64,
+          backgroundColor: "#121719",
+          borderWidth: 0
         },
       }}>
       <Tabs.Screen
@@ -37,21 +39,25 @@ export default function TabLayout() {
           title: "Events"
         }}
       />
+
       <Tabs.Screen
-        name="two"
+        name="events"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
-              tintColor={color}
-              size={28}
+          tabBarButton: (props) => (
+            <CustomTabButton
+              {...props}
+              label="Create Event"
+              route="/events"
             />
           ),
+          tabBarIcon: ({ focused }) => (
+            <CalendarPlus
+              size={22}
+              color={focused ? "#00292E" : "#F48F56"}
+            />
+          ),
+          tabBarShowLabel: false,
+          title: "Create event"
         }}
       />
     </Tabs>
