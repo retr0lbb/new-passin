@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 
 export interface Tag {
   id: string;
@@ -18,5 +18,11 @@ export function useTags() {
     })) as Tag[];
   }
 
-  return { getTags };
+  async function createTag(tag: Omit<Tag, "id">): Promise<string> {
+    const document = await addDoc(tagsRef, tag);
+
+    return document.id;
+  }
+
+  return { getTags, createTag };
 }

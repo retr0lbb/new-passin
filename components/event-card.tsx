@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { Calendar } from "lucide-react-native";
 import { Image, ImageSourcePropType, Text, TouchableOpacity, View } from "react-native";
 
@@ -49,17 +50,22 @@ export function EventDateBadge({ date }: EventDateBadgeProps) {
 interface EventCardButtonProps {
   label?: string;
   onPress?: () => void;
+  disabled?: boolean;
 }
  
 export function EventCardButton({
   label = "Garantir vaga",
   onPress,
+  disabled = false,
 }: EventCardButtonProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      disabled={disabled}
       activeOpacity={0.85}
-      className="items-center rounded-full bg-orange-400 px-6 py-3"
+      className={`items-center rounded-full bg-orange-400 px-6 py-3 ${
+        disabled ? "opacity-50" : ""
+      }`}
     >
       <Text className="text-sm font-bold uppercase text-zinc-900">
         {label}
@@ -69,12 +75,36 @@ export function EventCardButton({
 }
  
 
+
 interface EventCardProps {
   event: Event;
+  // Opcional: se você não passar, o clique já navega direto pra tela de
+  // inscrição. Passe isso quando precisar de um comportamento diferente
+  // (ex: futuramente abrir uma tela de "ver detalhes" em vez de inscrever).
   onPressAction?: () => void;
 }
  
 export function EventCard({ event, onPressAction }: EventCardProps) {
+  const router = useRouter();
+ 
+  function handlePress() {
+    if (onPressAction) {
+      onPressAction();
+      return;
+    }
+ 
+    // TODO: ajustar o pathname pra bater com a rota real do seu
+    // app/(...)/subscribe.tsx no expo-router.
+    router.push({
+      pathname: "/event/[id]/subscribe",
+      params: {
+        id: event.id,
+        eventTitle: event.title,
+        eventDate: event.eventDate.toISOString(),
+      },
+    });
+  }
+ 
   return (
     <View className="gap-4 rounded-3xl border border-zinc-800 bg-zinc-950 p-3">
       <EventImage source={{ uri: event.imageKey }}>
@@ -91,7 +121,7 @@ export function EventCard({ event, onPressAction }: EventCardProps) {
       <View className="mx-1 h-px bg-zinc-800" />
  
       <View className="px-1 pb-1">
-        <EventCardButton onPress={onPressAction} />
+        <EventCardButton onPress={handlePress} />
       </View>
     </View>
   );

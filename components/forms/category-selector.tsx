@@ -1,10 +1,9 @@
-import { CircleFadingPlus, LucideIcon } from "lucide-react-native";
+import { CircleFadingPlus } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export interface Category {
   id: string;
   label: string;
-  Icon: LucideIcon
 }
 
 interface CategorySelectorProps {
@@ -38,10 +37,10 @@ export function CategorySelector({
               }`}
             >
               <View className="flex-row items-center gap-2">
-                <category.Icon
+                {/* <category.Icon
                   size={16}
                   color={isSelected ? "#fb923c" : "#a1a1aa"}
-                />
+                /> */}
                 <Text
                   className={`text-sm font-medium ${
                     isSelected ? "text-orange-300" : "text-zinc-300"
